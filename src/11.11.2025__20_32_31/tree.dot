@@ -1,0 +1,501 @@
+digraph G {
+	NodeC31468[shape = Mrecord, style = "filled", fillcolor = "#bddaae", label = <
+	<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="5">
+		<TR>
+			<TD> ptr: 0x00C31468 </TD>
+		</TR>
+
+		<TR>
+			<TD> animal </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#8ec9d6"> left: 0x00C314F0 </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#80c8a0"> right: 0x00C319B8</TD>
+		</TR>
+	</TABLE>>];
+
+	NodeC314F0[shape = Mrecord, style = "filled", fillcolor = "#8ec9d6", label = <
+	<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="5">
+		<TR>
+			<TD> ptr: 0x00C314F0 </TD>
+		</TR>
+
+		<TR>
+			<TD> dragon </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#e6a7f6"> left: 0x00C31578 </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#8f81fa"> right: 0x00C31600</TD>
+		</TR>
+	</TABLE>>];
+
+	NodeC31578[shape = Mrecord, style = "filled", fillcolor = "#e6a7f6", label = <
+	<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="5">
+		<TR>
+			<TD> ptr: 0x00C31578 </TD>
+		</TR>
+
+		<TR>
+			<TD> Baby Dragon </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#808080"> left: NULL </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#808080"> right: NULL</TD>
+		</TR>
+	</TABLE>>];
+
+	NodeC314F0->NodeC31578;
+	NodeC31600[shape = Mrecord, style = "filled", fillcolor = "#8f81fa", label = <
+	<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="5">
+		<TR>
+			<TD> ptr: 0x00C31600 </TD>
+		</TR>
+
+		<TR>
+			<TD> have evolution </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#cbcac4"> left: 0x00C31688 </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#f49aca"> right: 0x00C31710</TD>
+		</TR>
+	</TABLE>>];
+
+	NodeC31688[shape = Mrecord, style = "filled", fillcolor = "#cbcac4", label = <
+	<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="5">
+		<TR>
+			<TD> ptr: 0x00C31688 </TD>
+		</TR>
+
+		<TR>
+			<TD> King hogs </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#808080"> left: NULL </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#808080"> right: NULL</TD>
+		</TR>
+	</TABLE>>];
+
+	NodeC31600->NodeC31688;
+	NodeC31710[shape = Mrecord, style = "filled", fillcolor = "#f49aca", label = <
+	<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="5">
+		<TR>
+			<TD> ptr: 0x00C31710 </TD>
+		</TR>
+
+		<TR>
+			<TD> collected from bones </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#80b2ed"> left: 0x00C31798 </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#bee194"> right: 0x00C31820</TD>
+		</TR>
+	</TABLE>>];
+
+	NodeC31798[shape = Mrecord, style = "filled", fillcolor = "#80b2ed", label = <
+	<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="5">
+		<TR>
+			<TD> ptr: 0x00C31798 </TD>
+		</TR>
+
+		<TR>
+			<TD> Sceleton Dragons </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#808080"> left: NULL </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#808080"> right: NULL</TD>
+		</TR>
+	</TABLE>>];
+
+	NodeC31710->NodeC31798;
+	NodeC31820[shape = Mrecord, style = "filled", fillcolor = "#bee194", label = <
+	<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="5">
+		<TR>
+			<TD> ptr: 0x00C31820 </TD>
+		</TR>
+
+		<TR>
+			<TD> have very much hp </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#f58594"> left: 0x00C318A8 </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#c6a2f8"> right: 0x00C31930</TD>
+		</TR>
+	</TABLE>>];
+
+	NodeC318A8[shape = Mrecord, style = "filled", fillcolor = "#f58594", label = <
+	<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="5">
+		<TR>
+			<TD> ptr: 0x00C318A8 </TD>
+		</TR>
+
+		<TR>
+			<TD> Golem </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#808080"> left: NULL </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#808080"> right: NULL</TD>
+		</TR>
+	</TABLE>>];
+
+	NodeC31820->NodeC318A8;
+	NodeC31930[shape = Mrecord, style = "filled", fillcolor = "#c6a2f8", label = <
+	<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="5">
+		<TR>
+			<TD> ptr: 0x00C31930 </TD>
+		</TR>
+
+		<TR>
+			<TD> six of them are attacking </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#dbe4a5"> left: 0x00C36038 </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#d8dfe2"> right: 0x00C360C8</TD>
+		</TR>
+	</TABLE>>];
+
+	NodeC36038[shape = Mrecord, style = "filled", fillcolor = "#dbe4a5", label = <
+	<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="5">
+		<TR>
+			<TD> ptr: 0x00C36038 </TD>
+		</TR>
+
+		<TR>
+			<TD> Minion Horde </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#808080"> left: NULL </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#808080"> right: NULL</TD>
+		</TR>
+	</TABLE>>];
+
+	NodeC31930->NodeC36038;
+	NodeC360C8[shape = Mrecord, style = "filled", fillcolor = "#d8dfe2", label = <
+	<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="5">
+		<TR>
+			<TD> ptr: 0x00C360C8 </TD>
+		</TR>
+
+		<TR>
+			<TD> Skubi-du </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#808080"> left: NULL </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#808080"> right: NULL</TD>
+		</TR>
+	</TABLE>>];
+
+	NodeC31930->NodeC360C8;
+	NodeC31820->NodeC31930;
+	NodeC31710->NodeC31820;
+	NodeC31600->NodeC31710;
+	NodeC314F0->NodeC31600;
+	NodeC31468->NodeC314F0;
+	NodeC319B8[shape = Mrecord, style = "filled", fillcolor = "#80c8a0", label = <
+	<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="5">
+		<TR>
+			<TD> ptr: 0x00C319B8 </TD>
+		</TR>
+
+		<TR>
+			<TD> have maces on its hands </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#be939a"> left: 0x00C319D0 </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#c2bfe1"> right: 0x00C319E8</TD>
+		</TR>
+	</TABLE>>];
+
+	NodeC319D0[shape = Mrecord, style = "filled", fillcolor = "#be939a", label = <
+	<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="5">
+		<TR>
+			<TD> ptr: 0x00C319D0 </TD>
+		</TR>
+
+		<TR>
+			<TD> Mega Knight </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#808080"> left: NULL </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#808080"> right: NULL</TD>
+		</TR>
+	</TABLE>>];
+
+	NodeC319B8->NodeC319D0;
+	NodeC319E8[shape = Mrecord, style = "filled", fillcolor = "#c2bfe1", label = <
+	<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="5">
+		<TR>
+			<TD> ptr: 0x00C319E8 </TD>
+		</TR>
+
+		<TR>
+			<TD> have splash damage </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#ce9cce"> left: 0x00C31A00 </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#89f1cc"> right: 0x00C35F90</TD>
+		</TR>
+	</TABLE>>];
+
+	NodeC31A00[shape = Mrecord, style = "filled", fillcolor = "#ce9cce", label = <
+	<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="5">
+		<TR>
+			<TD> ptr: 0x00C31A00 </TD>
+		</TR>
+
+		<TR>
+			<TD> shoots with a shotgun </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#a8cee5"> left: 0x00C30520 </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#d1aac9"> right: 0x00C35FD8</TD>
+		</TR>
+	</TABLE>>];
+
+	NodeC30520[shape = Mrecord, style = "filled", fillcolor = "#a8cee5", label = <
+	<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="5">
+		<TR>
+			<TD> ptr: 0x00C30520 </TD>
+		</TR>
+
+		<TR>
+			<TD> Hunter </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#808080"> left: NULL </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#808080"> right: NULL</TD>
+		</TR>
+	</TABLE>>];
+
+	NodeC31A00->NodeC30520;
+	NodeC35FD8[shape = Mrecord, style = "filled", fillcolor = "#d1aac9", label = <
+	<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="5">
+		<TR>
+			<TD> ptr: 0x00C35FD8 </TD>
+		</TR>
+
+		<TR>
+			<TD> spawn skeletons </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#89ffe4"> left: 0x00C360E0 </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#9be090"> right: 0x00C36008</TD>
+		</TR>
+	</TABLE>>];
+
+	NodeC360E0[shape = Mrecord, style = "filled", fillcolor = "#89ffe4", label = <
+	<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="5">
+		<TR>
+			<TD> ptr: 0x00C360E0 </TD>
+		</TR>
+
+		<TR>
+			<TD> Night Witch </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#808080"> left: NULL </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#808080"> right: NULL</TD>
+		</TR>
+	</TABLE>>];
+
+	NodeC35FD8->NodeC360E0;
+	NodeC36008[shape = Mrecord, style = "filled", fillcolor = "#9be090", label = <
+	<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="5">
+		<TR>
+			<TD> ptr: 0x00C36008 </TD>
+		</TR>
+
+		<TR>
+			<TD> Mag </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#808080"> left: NULL </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#808080"> right: NULL</TD>
+		</TR>
+	</TABLE>>];
+
+	NodeC35FD8->NodeC36008;
+	NodeC31A00->NodeC35FD8;
+	NodeC319E8->NodeC31A00;
+	NodeC35F90[shape = Mrecord, style = "filled", fillcolor = "#89f1cc", label = <
+	<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="5">
+		<TR>
+			<TD> ptr: 0x00C35F90 </TD>
+		</TR>
+
+		<TR>
+			<TD> have much damage and much hp </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#9af7be"> left: 0x00C36080 </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#f1bbae"> right: 0x00C36068</TD>
+		</TR>
+	</TABLE>>];
+
+	NodeC36080[shape = Mrecord, style = "filled", fillcolor = "#9af7be", label = <
+	<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="5">
+		<TR>
+			<TD> ptr: 0x00C36080 </TD>
+		</TR>
+
+		<TR>
+			<TD> attack together </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#beaffe"> left: 0x00C35FF0 </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#d79af9"> right: 0x00C36128</TD>
+		</TR>
+	</TABLE>>];
+
+	NodeC35FF0[shape = Mrecord, style = "filled", fillcolor = "#beaffe", label = <
+	<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="5">
+		<TR>
+			<TD> ptr: 0x00C35FF0 </TD>
+		</TR>
+
+		<TR>
+			<TD> Elite Barbarians </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#808080"> left: NULL </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#808080"> right: NULL</TD>
+		</TR>
+	</TABLE>>];
+
+	NodeC36080->NodeC35FF0;
+	NodeC36128[shape = Mrecord, style = "filled", fillcolor = "#d79af9", label = <
+	<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="5">
+		<TR>
+			<TD> ptr: 0x00C36128 </TD>
+		</TR>
+
+		<TR>
+			<TD> PEKKA </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#808080"> left: NULL </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#808080"> right: NULL</TD>
+		</TR>
+	</TABLE>>];
+
+	NodeC36080->NodeC36128;
+	NodeC35F90->NodeC36080;
+	NodeC36068[shape = Mrecord, style = "filled", fillcolor = "#f1bbae", label = <
+	<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="5">
+		<TR>
+			<TD> ptr: 0x00C36068 </TD>
+		</TR>
+
+		<TR>
+			<TD> Hog rider </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#808080"> left: NULL </TD>
+		</TR>
+
+		<TR>
+			<TD BGCOLOR = "#808080"> right: NULL</TD>
+		</TR>
+	</TABLE>>];
+
+	NodeC35F90->NodeC36068;
+	NodeC319E8->NodeC35F90;
+	NodeC319B8->NodeC319E8;
+	NodeC31468->NodeC319B8;
+}
