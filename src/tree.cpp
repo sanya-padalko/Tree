@@ -24,8 +24,11 @@ Tree_t* TreeCtor() {
 CodeError_t TreeDtor(Node_t* root) {
     my_assert(root, NULLPTR, NULLPTR);
 
-    TreeDtor(root->left);
-    TreeDtor(root->right);
+    if (root->left) 
+        TreeDtor(root->left);
+
+    if (root->right) 
+        TreeDtor(root->right);
 
     free(root);
 }
@@ -98,7 +101,7 @@ void HtmlDump(Tree_t* tree, VarInfo varinfo) {
     sprintf(img_path, "result%d.png", dump_counter++);
 
     fprintf(dump_file, "<h3>");
-    TextDump(tree->root);
+    TextDump(tree->root, dump_file);
     fprintf(dump_file, "</h3>");
 
     fprintf(dump_file, "<img src=\"%s\">\n", img_path);
@@ -107,20 +110,19 @@ void HtmlDump(Tree_t* tree, VarInfo varinfo) {
 }
 
 void TreeDump(Node_t* root, FILE* dot_file) {
-    fprintf(dot_file, "\tNode%X[shape = Mrecord, style = \"filled\", fillcolor = \"#%06X\", label = \"{{<f0> ptr: 0x%p} | {<f1> %s} | {{<f3> left: ", (int)root, CalcHash((int)root), root, root->message);
+    fprintf(dot_file, "\tNode%X[shape = Mrecord, style = \"filled\", fillcolor = \"#%06x\", label = <\n\t<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"5\">\n\t\t<TR>\n\t\t\t<TD> ptr: 0x%p </TD>\n\t\t</TR>\n\n\t\t<TR>\n\t\t\t<TD> %s </TD>\n\t\t</TR>\n\n\t\t<TR>\n\t\t\t<TD BGCOLOR = \"#%06x\"> left: ", (int)root, CalcHash((int)root), root, root->message, CalcHash((int)root->left));
     if (root->left)
         fprintf(dot_file, "0x%p", root->left);
     else
         fprintf(dot_file, "NULL");
 
-    fprintf(dot_file, " | <f5> yes} ");
-    fprintf(dot_file, " | {<f4> right: ");
+    fprintf(dot_file, " </TD>\n\t\t</TR>\n\n\t\t<TR>\n\t\t\t<TD BGCOLOR = \"#%06x\"> right: ", CalcHash((int)root->right));
     if (root->right)
         fprintf(dot_file, "0x%p", root->right);
     else
         fprintf(dot_file, "NULL");
 
-    fprintf(dot_file, " | <f6> no}}}\"];\n");
+    fprintf(dot_file, "</TD>\n\t\t</TR>\n\t</TABLE>>];\n\n");
     
     if (root->left) {
         TreeDump(root->left, dot_file);
@@ -132,21 +134,21 @@ void TreeDump(Node_t* root, FILE* dot_file) {
     }
 }
 
-void TextDump(Node_t* root) {
-    fprintf(dump_file, "( ");
-    fprintf(dump_file, "\"%s\" ", root->message);
+void TextDump(Node_t* root, FILE* text_file) {
+    fprintf(text_file, "( ");
+    fprintf(text_file, "\"%s\" ", root->message);
 
     if (root->left == NULL)
-        fprintf(dump_file, " null ");
+        fprintf(text_file, " nil ");
     else
-        TextDump(root->left);
+        TextDump(root->left, text_file);
 
     if (root->right == NULL)
-        fprintf(dump_file, " null ");
+        fprintf(text_file, " nil ");
     else
-        TextDump(root->right);
+        TextDump(root->right, text_file);
 
-    fprintf(dump_file, " ) ");
+    fprintf(text_file, " ) ");
 }
 
 CodeError_t Akinator(Tree_t* tree) {
@@ -190,7 +192,7 @@ CodeError_t NewVertex(Tree_t* tree, Node_t* cur) {
     printf("Who it was?\n");
     const char* new_msg = (const char*)calloc(MSG_SIZE, sizeof(char));
     READ(new_msg);
-    printf("How is " YELLOW_COLOR "%s" RESET_COLOR " different from " YELLOW_COLOR "%s" RESET_COLOR "?: %s ", new_msg, cur->message, new_msg);
+    printf("How is " YELLOW_COLOR "%s" RESET_COLOR " different from " YELLOW_COLOR "%s" RESET_COLOR "?: " YELLOW_COLOR "%s" RESET_COLOR " ", new_msg, cur->message, new_msg);
 
     const char* diff_param = (const char*)calloc(MSG_SIZE, sizeof(char));
     READ(diff_param);
@@ -211,6 +213,74 @@ CodeError_t AddVertex(Node_t* root, const char* root_new_msg, const char* left_n
     root->message = root_new_msg;
 
     return NOTHING;
+}
+
+CodeError_t ReadBase(Tree_t* tree, const char* file_name) {
+    my_assert(tree, NULLPTR, NULLPTR);
+    my_assert(file_name, NULLPTR, NULLPTR);
+
+    int file_size = get_file_size(file_name);
+
+    tree->buf = (char*)calloc(file_size + 1, sizeof(char));
+
+    FILE* file_base = fopen(file_name, "r");
+    fread(tree->buf, sizeof(char), file_size, file_base);
+
+    fclose(file_base);
+
+    return NOTHING;
+}
+
+int get_file_size(const char* file_name) {
+    my_assert(file_name, NULLPTR, 0);
+
+    struct stat file_stat; 
+    int stat_result = stat(file_name, &file_stat);
+    my_assert(!stat_result, FILE_ERR, 0);
+
+    return file_stat.st_size;
+}
+
+Node_t* ParseBase(char** cur_pos) {
+    my_assert(cur_pos, NULLPTR, NULL);
+    my_assert(*cur_pos, NULLPTR, NULL);
+
+    if (**cur_pos == '(') {
+        ++*cur_pos;
+
+        Node_t* node = NodeCtor("");
+        int read_bytes = 0;
+
+        node->message = (const char*)calloc(MSG_SIZE, sizeof(char));
+        sscanf(*cur_pos, " \"%[^\"]\" %n", node->message, &read_bytes);
+        *cur_pos += read_bytes;
+
+        node->left = ParseBase(cur_pos);
+        node->right = ParseBase(cur_pos);
+
+        if (**cur_pos != ')') {
+            printerr(RED_COLOR "ERRORS IN TEXT OF BASE\n" RESET_COLOR);
+            return node;
+        }
+
+        ++*cur_pos;
+        sscanf(*cur_pos, " %n", &read_bytes);
+        *cur_pos += read_bytes;
+
+        return node;
+    }
+
+    if (**cur_pos == 'n') {
+        *cur_pos += strlen("nil");
+
+        int read_bytes = 0;
+        sscanf(*cur_pos, " %n", &read_bytes);
+        *cur_pos += read_bytes;
+        return NULL;
+    }
+
+    printerr(RED_COLOR "ERRORS IN TEXT OF BASE\n" RESET_COLOR);
+    return NULL;
 }
 
 int CalcHash(int p) {

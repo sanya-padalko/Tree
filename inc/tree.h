@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#include <sys/stat.h>
 #include "errors.h"
 #include "vars.h"
 
@@ -20,6 +21,8 @@ struct Tree_t {
     Node_t* root;
 
     size_t nodes_cnt;
+
+    char* buf;
 };
 
 #define htmldump(tree, error_code, add_info) HtmlDump(tree, VarInfo{#tree, __FILE__, __FUNCTION__, __LINE__, error_code, add_info})
@@ -34,10 +37,13 @@ int GetSize(Node_t* root, int max_size);
 int CalcHash(int p);
 void HtmlDump(Tree_t* tree, VarInfo varinfo);
 void TreeDump(Node_t* root, FILE* dot_file);
-void TextDump(Node_t* root);
+void TextDump(Node_t* root, FILE* text_file);
 CodeError_t Akinator(Tree_t* root);
 CodeError_t NewVertex(Tree_t* tree, Node_t* cur);
 CodeError_t AddVertex(Node_t* root, const char* root_new_msg, const char* left_new_msg);
+CodeError_t ReadBase(Tree_t* tree, const char* file_name);
+int get_file_size(const char* file_name);
+Node_t* ParseBase(char** cur_pos);
 void OpenHtml();
 void CloseHtml();
 
