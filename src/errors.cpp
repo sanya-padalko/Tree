@@ -42,6 +42,9 @@ void PrintErr(CodeError_t error_type, const char* file_name, const char* func_na
         case CALLOC_ERR:
             printerr(RED_COLOR "Calloc went wrong\n");
             break;
+        case FILE_ERR:
+            printerr(RED_COLOR "Working with file went wrong\n");
+            break;
         default:
             printerr(YELLOW_COLOR "Unknown error\n");
     }

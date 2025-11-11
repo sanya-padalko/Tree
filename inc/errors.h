@@ -33,6 +33,7 @@ enum CodeError_t {
     IND_ERR        =   10,
     CALLOC_ERR     =   11,
     CYCLE_ERR      =   12,
+    FILE_ERR       =   13,
     ERROR_COUNTS
 };
 
