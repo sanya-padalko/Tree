@@ -1,0 +1,27 @@
+digraph G {
+	Node922C68[shape = Mrecord, style = "filled", fillcolor = "#98C299", label = "{{<f0> ptr: 0x00922C68} | {<f1> animal} | {{<f3> left: 0x00922C80 | <f5> yes}  | {<f4> right: 0x00922C98 | <f6> no}}}"];
+	Node922C80[shape = Mrecord, style = "filled", fillcolor = "#DCDEEE", label = "{{<f0> ptr: 0x00922C80} | {<f1> cat} | {{<f3> left: 0x00922CB0 | <f5> yes}  | {<f4> right: 0x00922CC8 | <f6> no}}}"];
+	Node922CB0[shape = Mrecord, style = "filled", fillcolor = "#AAA4CC", label = "{{<f0> ptr: 0x00922CB0} | {<f1> Poltorashka} | {{<f3> left: NULL | <f5> yes}  | {<f4> right: NULL | <f6> no}}}"];
+	Node922C80->Node922CB0;
+	Node922CC8[shape = Mrecord, style = "filled", fillcolor = "#FC9DBA", label = "{{<f0> ptr: 0x00922CC8} | {<f1> have evolution} | {{<f3> left: 0x00922D40 | <f5> yes}  | {<f4> right: 0x00922D58 | <f6> no}}}"];
+	Node922D40[shape = Mrecord, style = "filled", fillcolor = "#909EB5", label = "{{<f0> ptr: 0x00922D40} | {<f1> King hogs} | {{<f3> left: NULL | <f5> yes}  | {<f4> right: NULL | <f6> no}}}"];
+	Node922CC8->Node922D40;
+	Node922D58[shape = Mrecord, style = "filled", fillcolor = "#80E087", label = "{{<f0> ptr: 0x00922D58} | {<f1> collected from bones} | {{<f3> left: 0x00922D70 | <f5> yes}  | {<f4> right: 0x00922D88 | <f6> no}}}"];
+	Node922D70[shape = Mrecord, style = "filled", fillcolor = "#9EA5E4", label = "{{<f0> ptr: 0x00922D70} | {<f1> Sceleton Dragons} | {{<f3> left: NULL | <f5> yes}  | {<f4> right: NULL | <f6> no}}}"];
+	Node922D58->Node922D70;
+	Node922D88[shape = Mrecord, style = "filled", fillcolor = "#C0F99F", label = "{{<f0> ptr: 0x00922D88} | {<f1> Skubi-du} | {{<f3> left: NULL | <f5> yes}  | {<f4> right: NULL | <f6> no}}}"];
+	Node922D58->Node922D88;
+	Node922CC8->Node922D58;
+	Node922C80->Node922CC8;
+	Node922C68->Node922C80;
+	Node922C98[shape = Mrecord, style = "filled", fillcolor = "#A9FFF9", label = "{{<f0> ptr: 0x00922C98} | {<f1> have maces on its hands} | {{<f3> left: 0x00922CE0 | <f5> yes}  | {<f4> right: 0x00922CF8 | <f6> no}}}"];
+	Node922CE0[shape = Mrecord, style = "filled", fillcolor = "#E0E8FE", label = "{{<f0> ptr: 0x00922CE0} | {<f1> Mega Knight} | {{<f3> left: NULL | <f5> yes}  | {<f4> right: NULL | <f6> no}}}"];
+	Node922C98->Node922CE0;
+	Node922CF8[shape = Mrecord, style = "filled", fillcolor = "#D4EEA8", label = "{{<f0> ptr: 0x00922CF8} | {<f1> have splash damage} | {{<f3> left: 0x00922D10 | <f5> yes}  | {<f4> right: 0x00922D28 | <f6> no}}}"];
+	Node922D10[shape = Mrecord, style = "filled", fillcolor = "#87FD8D", label = "{{<f0> ptr: 0x00922D10} | {<f1> Mag} | {{<f3> left: NULL | <f5> yes}  | {<f4> right: NULL | <f6> no}}}"];
+	Node922CF8->Node922D10;
+	Node922D28[shape = Mrecord, style = "filled", fillcolor = "#EDB9F1", label = "{{<f0> ptr: 0x00922D28} | {<f1> Hog rider} | {{<f3> left: NULL | <f5> yes}  | {<f4> right: NULL | <f6> no}}}"];
+	Node922CF8->Node922D28;
+	Node922C98->Node922CF8;
+	Node922C68->Node922C98;
+}
