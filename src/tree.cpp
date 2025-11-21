@@ -27,10 +27,10 @@ Tree_t* TreeCtor() {
 CodeError_t TreeDtor(Node_t* root) {
     my_assert(root, NULLPTR, NULLPTR);
 
-    if (root->left) 
+    if (root->left)
         TreeDtor(root->left);
 
-    if (root->right) 
+    if (root->right)
         TreeDtor(root->right);
 
     free(root);
@@ -50,7 +50,7 @@ CodeError_t TreeVerify(Tree_t* tree) {
 
     if (real_size != tree->nodes_cnt)
         return CYCLE_ERR;
-    
+
     return NOTHING;
 }
 
@@ -60,7 +60,7 @@ int GetSize(Node_t* root) {
     int sz = 1;
     if (root->left)
         sz += GetSize(root->left);
-    
+
     if (sz > MAX_NODES_CNT)
         return sz;
 
@@ -91,7 +91,7 @@ CodeError_t HtmlDump(Tree_t* tree, VarInfo varinfo) {
     }
 
     TreeImgDump(tree);
-    
+
     char dot_str[100] = {};
     sprintf(dot_str, "dot tree.dot -T png -o result%d.png", dump_counter);
     system(dot_str);
@@ -120,7 +120,7 @@ void TreeImgDump(Tree_t* tree) {
     fclose(dot_file);
 }
 
-void RecDump(Node_t* root, FILE* dot_file) {       // where if ...???
+void RecDump(Node_t* root, FILE* dot_file) {
     fprintf(dot_file, "\tNode%X[shape = Mrecord, style = \"filled\", fillcolor = \"#%06x\", label = <\n\t<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"5\">\n\t\t<TR>\n\t\t\t<TD> ptr: 0x%p </TD>\n\t\t</TR>\n\n\t\t<TR>\n\t\t\t<TD> %s </TD>\n\t\t</TR>\n\n\t\t<TR>\n\t\t\t<TD BGCOLOR = \"#%06x\"> left: ", (int)root, CalcHash((int)root), root, root->message, CalcHash((int)root->left));
     if (root->left)
         fprintf(dot_file, "0x%p", root->left);
@@ -134,7 +134,7 @@ void RecDump(Node_t* root, FILE* dot_file) {       // where if ...???
         fprintf(dot_file, "NULL");
 
     fprintf(dot_file, "</TD>\n\t\t</TR>\n\t</TABLE>>];\n\n");
-    
+
     if (root->left) {
         RecDump(root->left, dot_file);
         fprintf(dot_file, "\tNode%X->Node%X;\n", (int)root, (int)root->left);
@@ -165,38 +165,57 @@ void TextDump(Node_t* root, FILE* text_file) {
 CodeError_t Akinator(Tree_t* tree) {
     treeverify(tree);
 
+    printf(GREEN_COLOR "Hi, that's Akinator\n" RESET_COLOR);
+
     const char* answer = (const char*)calloc(MSG_SIZE, sizeof(char));
 
-    Node_t* cur = tree->root;
-
     do {
-        cur = tree->root;
-
-        for (; cur && !(cur->left == NULL && cur->right == NULL);) {
-            printf("%s?\n", cur->message);
-
-            READ(answer);
-
-            if (CheckAnswer(answer))
-                cur = cur->left;
-            else
-                cur = cur->right;
-        }
-
-        if (!cur) return NULLPTR;
-
-        printf("Finded: " YELLOW_COLOR "%s" RESET_COLOR ", is it true?\n", cur->message);
+        printf("Change game mode (f - finding, c - compare, d - definition): ");
         READ(answer);
 
-        if (strcmp(answer, "no") == 0)
-            NewVertex(tree, cur);
+        while (answer[0] != 'f' && answer[0] != 'c' && answer[0] != 'd') {
+            printf(RED_COLOR "Wrong input. Please, enter game mode again: " RESET_COLOR);
+        }
+
+        if (answer[0] == 'f')
+            FindingWord(tree);
+        else if (answer[0] == 'c')
+            Comparison(tree);
+        else
+            Definition(tree);
 
         printf("Do you want continue?\n");
         READ(answer);
-        
+
     } while (CheckAnswer(answer));
 
     return NOTHING;
+}
+
+CodeError_t FindingWord(Tree_t* tree) {
+    printf(YELLOW_COLOR "Finding mode...\n" RESET_COLOR);
+
+    const char* answer = (const char*)calloc(MSG_SIZE, sizeof(char));
+    Node_t* cur = tree->root;
+
+    for (; cur && !(cur->left == NULL && cur->right == NULL);) {
+        printf("%s?\n", cur->message);
+
+        READ(answer);
+
+        if (CheckAnswer(answer))
+            cur = cur->left;
+        else
+            cur = cur->right;
+    }
+
+    if (!cur) return NULLPTR;
+
+    printf("Finded: " YELLOW_COLOR "%s" RESET_COLOR ", is it true?\n", cur->message);
+    READ(answer);
+
+    if (strcmp(answer, "no") == 0)
+        NewVertex(tree, cur);
 }
 
 bool CheckAnswer(const char* answer) {
@@ -214,7 +233,7 @@ CodeError_t NewVertex(Tree_t* tree, Node_t* cur) {
 
     AddVertex(cur, diff_param, new_msg);
     ++tree->nodes_cnt;
-    
+
     htmldump(tree, NOTHING, "added new word");
 }
 
@@ -234,176 +253,174 @@ CodeError_t AddVertex(Node_t* root, const char* root_new_msg, const char* left_n
     return NOTHING;
 }
 
-CodeError_t MessageComparison(Tree_t* tree) {
-    printf("Please, enter nodes which you want compare: \n");
+CodeError_t Comparison(Tree_t* tree) {
+    treeverify(tree);
+
+    printf(YELLOW_COLOR "Comparing mode...\n" RESET_COLOR);
+    printf("Please, enter names of nodes, which you want compare: \n");
 
     const char* first_name = (const char*)calloc(MSG_SIZE, sizeof(char));
     const char* second_name = (const char*)calloc(MSG_SIZE, sizeof(char));
-    
+
     READ(first_name);
     READ(second_name);
 
-    Node_t* first_node = FindVertex(tree->root, first_name);
-    Node_t* second_node = FindVertex(tree->root, second_name);
-    
-    if (!first_node)
-        printf(RED_COLOR "First node isn't finded\n" RESET_COLOR);
-    
-    if (!second_node)
-        printf(RED_COLOR "Second node isn't finded\n" RESET_COLOR);
+    Node_t* node = tree->root;
 
-    my_assert(first_node && second_node, IND_ERR, IND_ERR);
-
-    Node_t* common_parent = FindParent(tree, first_node, second_node);
-
-    if (!common_parent) {
-        printf(RED_COLOR "Common parent isn't finded" RESET_COLOR);
-        return IND_ERR;
+    if (!CheckSubtree(node, first_name)) {
+        printf(RED_COLOR "There is no %s in base (use finding mode, to add it)\n" RESET_COLOR, first_name);
+        return VALUE_ERR;
     }
-    
-    Node_t* node = common_parent;
 
-    if (node != tree->root) {
-        printf(YELLOW_COLOR "Common: ");
+    if (!CheckSubtree(node, second_name)) {
+        printf(RED_COLOR "There is no %s in base (use finding mode, to add it)\n" RESET_COLOR, second_name);
+        return VALUE_ERR;
+    }
 
-        if (GetParent(node)->left == node)
-            printf(GREEN_COLOR);
-        else
-            printf(RED_COLOR);
-        node = GetParent(node);
-        printf("%s" YELLOW_COLOR, node->message);
+    printf(YELLOW_COLOR "Common part:" RESET_COLOR);
+    int common_part = 0;
+    int rev = 0;
+    while (CheckSubtree(node, first_name) && CheckSubtree(node, second_name)) {
+        if (node->left == NULL && node->right == NULL)
+            break;
 
-        while (node != tree->root) {
-            printf(" --- ");
+        if (CheckSubtree(node->left, first_name) && CheckSubtree(node->left, second_name)) {
+            printf(YELLOW_COLOR " --- ");
+            printf(GREEN_COLOR "%s" RESET_COLOR, node->message);
+            ++common_part;
 
-            if (GetParent(node)->left == node)
-                printf(GREEN_COLOR);
-            else
-                printf(RED_COLOR);
-            node = GetParent(node);
-            printf("%s" YELLOW_COLOR, node->message);
+            node = node->left;
+        }
+        else if (CheckSubtree(node->right, first_name) && CheckSubtree(node->right, second_name)) {
+            printf(YELLOW_COLOR " --- ");
+            printf(RED_COLOR "%s" RESET_COLOR, node->message);
+            ++common_part;
+            
+            node = node->right;
+        }
+        else {
+            if (CheckSubtree(node->right, first_name)) 
+                rev = 1;
+
+            break;
         }
     }
-    else {
-        printf(RED_COLOR "Nothing common");
-    }
 
-    printf(YELLOW_COLOR "\nAdditionl %s features: ", first_name);
-
-    while (GetParent(first_node) != common_parent) {
-        if (GetParent(first_node)->left == first_node)
-            printf(GREEN_COLOR);
-        else
-            printf(RED_COLOR);
-
-        first_node = GetParent(first_node);
-        printf("%s" YELLOW_COLOR, first_node->message);
-        
-        if (GetParent(first_node) != common_parent)
-            printf(" --- ");
-    }
-
-    printf(YELLOW_COLOR "\nAdditionl %s features: ", second_name);
-
-    while (GetParent(second_node) != common_parent) {
-
-        if (GetParent(second_node)->left == second_node)
-            printf(GREEN_COLOR);
-        else
-            printf(RED_COLOR);
-
-        second_node = GetParent(second_node);
-        printf("%s" YELLOW_COLOR, second_node->message);
-
-        if (GetParent(second_node) != common_parent)
-            printf(" --- ");
-    }
-
-    printf("\nFirst different feature: ");
-
-    if (common_parent->left == first_node)
-        printf(GREEN_COLOR"%s is %s " YELLOW_COLOR "and " RED_COLOR "%s not", first_name, common_parent->message, second_name);
-    else
-        printf(GREEN_COLOR"%s is %s " YELLOW_COLOR "and " RED_COLOR "%s not", second_name, common_parent->message, first_name);
-
-    printf("\n" RESET_COLOR);
-}
-
-Node_t* FindParent(Tree_t* tree, Node_t* first_node, Node_t* second_node) {
-    my_assert(tree, NULLPTR, NULL);
-    my_assert(first_node, NULLPTR, NULL);
-    my_assert(second_node, NULLPTR, NULL);
-
-    int first_deep = GetDeep(tree, first_node);
-    int second_deep = GetDeep(tree, second_node);
+    if (node == tree->root)
+        printf(RED_COLOR " NOTHING" RESET_COLOR);
     
-    if (first_deep < second_deep) {
-        Node_t* add_node = first_node;
-        first_node = second_node;
-        second_node = add_node;
+    if (common_part)
+        printf(YELLOW_COLOR " --- " RESET_COLOR);
+    printf("\n");
+
+    if (node->left == NULL && node->right == NULL) {
+        printf(GREEN_COLOR "The elements are the same\n" RESET_COLOR);
+        return NOTHING;
     }
 
-    int deep_delta = abs(first_deep - second_deep);
-
-    while (deep_delta--)
-        first_node = first_node->parent;
-
-    while (first_node != second_node) {
-        first_node = GetParent(first_node);
-        second_node = GetParent(second_node);
+    if (rev) {
+        const char* add_name = first_name;
+        first_name = second_name;
+        second_name = add_name;
     }
 
-    return first_node;
+    printf(YELLOW_COLOR "First different part: " GREEN_COLOR "%s %s" YELLOW_COLOR", and " RED_COLOR "%s not\n" RESET_COLOR, first_name, node->message, second_name);
+
+    Node_t* left = node->left;
+    Node_t* right = node->right;
+    printf(GREEN_COLOR "%s:" RESET_COLOR, first_name);
+
+    while (left->left || left->right) {
+        if (CheckSubtree(left->left, first_name)) {
+            printf(YELLOW_COLOR " --- ");
+            printf(GREEN_COLOR "%s", left->message);
+            left = left->left;
+        }
+        else {
+            printf(YELLOW_COLOR " --- ");
+            printf(RED_COLOR "%s", left->message);
+            left = left->right;
+        }
+    }
+
+    if (left != node->left)
+        printf(YELLOW_COLOR " --- ");
+    else
+        printf(YELLOW_COLOR " no added information");
+    printf("\n" RESET_COLOR);
+
+    printf(GREEN_COLOR "%s:" RESET_COLOR, second_name);
+
+    while (right->left || right->right) {
+        if (CheckSubtree(right->left, second_name)) {
+            printf(YELLOW_COLOR " --- ");
+            printf(GREEN_COLOR "%s", right->message);
+            right = right->left;
+        }
+        else {
+            printf(YELLOW_COLOR " --- ");
+            printf(RED_COLOR "%s", right->message);
+            right = right->right;
+        }
+    }
+
+    if (right != node->right)
+        printf(YELLOW_COLOR " --- ");
+    else
+        printf(YELLOW_COLOR " no added information");
+    printf("\n" RESET_COLOR);
+
+    return NOTHING;
 }
 
-Node_t* GetParent(Node_t* root) {
-    my_assert(root, NULLPTR, NULL);
+CodeError_t Definition(Tree_t* tree) {
+    treeverify(tree);
 
-    if (!root)
+    printf(YELLOW_COLOR "Definition mode...\n" RESET_COLOR);
+    printf("Enter the name of node, the definition of which you want to get:\n");
+
+    const char* name = (const char*)calloc(MSG_SIZE, sizeof(char));
+
+    READ(name);
+
+    Node_t* node = tree->root;
+
+    if (!CheckSubtree(node, name)) {
+        printf(RED_COLOR "There is no %s in base (use finding mode, to add it)\n" RESET_COLOR, name);
+        return VALUE_ERR;
+    }
+
+    printf(GREEN_COLOR "%s" YELLOW_COLOR ": ", name);
+    while (node->left || node->right) {
+        if (CheckSubtree(node->left, name)) {
+            printf(YELLOW_COLOR " --- ");
+            printf(GREEN_COLOR "%s", node->message);
+            node = node->left;
+        }
+        else {
+            printf(YELLOW_COLOR " --- ");
+            printf(RED_COLOR "%s", node->message);
+            node = node->right;
+        }
+    }
+
+    printf(YELLOW_COLOR " --- \n" RESET_COLOR);
+
+    return NOTHING;
+}
+
+Node_t* CheckSubtree(Node_t* node, const char* name) {
+    if (!node || !name)
         return NULL;
 
-    return root->parent;
-}
+    if (!strcmp(node->message, name) && node->left == NULL && node->right == NULL)
+        return node;
 
-int GetDeep(Tree_t* tree, Node_t* node) {
-    my_assert(tree, NULLPTR, -1);
-    my_assert(node, NULLPTR, -1);
+    Node_t* node_name = CheckSubtree(node->left, name);
+    if (node_name)
+        return node_name;
 
-    int deep = 0;
-
-    while (node != tree->root) {
-        node = node->parent;
-        ++deep;
-    }
-
-    return deep;
-}
-
-Node_t* FindVertex(Node_t* root, const char* find_msg) {
-    my_assert(root, NULLPTR, NULL);
-    my_assert(find_msg, NULLPTR, NULL);
-
-    if (!root || !find_msg) 
-        return NULL;
-
-    if (!strcmp(root->message, find_msg))
-        return root;
-
-    if (root->left) {
-        Node_t* vertex = FindVertex(root->left, find_msg);
-
-        if (vertex)
-            return vertex;
-    }
-
-    if (root->right) {
-        Node_t* vertex = FindVertex(root->right, find_msg);
-
-        if (vertex)
-            return vertex;
-    }
-
-    return NULL;
+    return CheckSubtree(node->right, name);
 }
 
 CodeError_t ReadBase(Tree_t* tree, const char* file_name) {
@@ -425,7 +442,7 @@ CodeError_t ReadBase(Tree_t* tree, const char* file_name) {
 int get_file_size(const char* file_name) {
     my_assert(file_name, NULLPTR, 0);
 
-    struct stat file_stat; 
+    struct stat file_stat;
     int stat_result = stat(file_name, &file_stat);
     my_assert(!stat_result, FILE_ERR, 0);
 
@@ -442,7 +459,7 @@ Node_t* ParseBase(char** cur_pos) {
         Node_t* node = NodeCtor("");
         int read_bytes = 0;
 
-        node->message = (const char*)calloc(MSG_SIZE, sizeof(char));        // if size > msg_size
+        node->message = (const char*)calloc(MSG_SIZE, sizeof(char));
         sscanf(*cur_pos, " \"%[^\"]\" %n", node->message, &read_bytes);
         *cur_pos += read_bytes;
 

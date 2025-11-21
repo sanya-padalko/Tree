@@ -40,19 +40,23 @@ CodeError_t TreeDtor(Node_t* root);
 CodeError_t TreeVerify(Tree_t* tree);
 int GetSize(Node_t* root);
 int CalcHash(int p);
+
 CodeError_t HtmlDump(Tree_t* tree, VarInfo varinfo);
 void TreeImgDump(Tree_t* tree);
 void RecDump(Node_t* root, FILE* dot_file);
 void TextDump(Node_t* root, FILE* text_file);
+
 CodeError_t Akinator(Tree_t* root);
+
+CodeError_t FindingWord(Tree_t* tree);
 bool CheckAnswer(const char* answer);
 CodeError_t NewVertex(Tree_t* tree, Node_t* cur);
 CodeError_t AddVertex(Node_t* root, const char* root_new_msg, const char* left_new_msg);
-CodeError_t MessageComparison(Tree_t* tree);
-Node_t* FindParent(Tree_t* tree, Node_t* node1, Node_t* node2);
-Node_t* GetParent(Node_t* root);
-int GetDeep(Tree_t* tree, Node_t* node);
-Node_t* FindVertex(Node_t* root, const char* find_msg);
+
+CodeError_t Comparison(Tree_t* tree);
+CodeError_t Definition(Tree_t* tree);
+Node_t* CheckSubtree(Node_t* node, const char* name);
+
 CodeError_t ReadBase(Tree_t* tree, const char* file_name);
 int get_file_size(const char* file_name);
 Node_t* ParseBase(char** cur_pos);
