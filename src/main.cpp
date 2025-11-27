@@ -1,7 +1,7 @@
 #include "tree.h"
 #include "folders.h"
 
-int main(int argc, char* argv[]) {
+int main() {
     MakeDir();
 
     const char* base_file = "../base.txt";
