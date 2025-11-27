@@ -1,6 +1,8 @@
 #ifndef _LIST_H_
 #define _LIST_H_
 
+#define TX_USE_SPEAK
+#include "TXLib.h"
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
@@ -12,11 +14,11 @@
 
 #define treeverify(tree) htmldump(tree, TreeVerify(tree), "Dump after verification")
 
-const int MSG_SIZE      =   100;
+const int MSG_SIZE      =   300;
 const int MAX_NODES_CNT = 10000;
 
 struct Node_t {
-    const char* message = "";
+    char* message;
 
     Node_t* parent = NULL;
 
@@ -39,7 +41,7 @@ Tree_t* TreeCtor();
 CodeError_t TreeDtor(Node_t* root);
 CodeError_t TreeVerify(Tree_t* tree);
 int GetSize(Node_t* root);
-int CalcHash(int p);
+int CalcHash(long long p);
 
 CodeError_t HtmlDump(Tree_t* tree, VarInfo varinfo);
 void TreeImgDump(Tree_t* tree);
@@ -51,7 +53,7 @@ CodeError_t Akinator(Tree_t* root);
 CodeError_t FindingWord(Tree_t* tree);
 bool CheckAnswer(const char* answer);
 CodeError_t NewVertex(Tree_t* tree, Node_t* cur);
-CodeError_t AddVertex(Node_t* root, const char* root_new_msg, const char* left_new_msg);
+CodeError_t AddVertex(Node_t* root, char* root_new_msg, char* left_new_msg);
 
 CodeError_t Comparison(Tree_t* tree);
 CodeError_t Definition(Tree_t* tree);
