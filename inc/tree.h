@@ -3,6 +3,7 @@
 
 #define TX_USE_SPEAK
 #include "TXLib.h"
+#include "animation.h"
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
@@ -16,6 +17,10 @@
 
 const int MSG_SIZE      =   300;
 const int MAX_NODES_CNT = 10000;
+
+const int NO_NEED_REV = 0;
+const int NEED_REV = 1;
+const int SAME_ELEM = 2;
 
 struct Node_t {
     char* message;
@@ -51,11 +56,16 @@ void TextDump(Node_t* root, FILE* text_file);
 CodeError_t Akinator(Tree_t* root);
 
 CodeError_t FindingWord(Tree_t* tree);
+void PrintRandomNode(Node_t* node);
 bool CheckAnswer(const char* answer);
 CodeError_t NewVertex(Tree_t* tree, Node_t* cur);
 CodeError_t AddVertex(Node_t* root, char* root_new_msg, char* left_new_msg);
 
 CodeError_t Comparison(Tree_t* tree);
+int PrintCommonPart(Node_t** node, char* first_name, char* second_name);
+CodeError_t PrintDescription(Node_t* node, char* name);
+Node_t* NextVertex(Node_t* node, char* name);
+
 CodeError_t Definition(Tree_t* tree);
 Node_t* CheckSubtree(Node_t* node, const char* name);
 

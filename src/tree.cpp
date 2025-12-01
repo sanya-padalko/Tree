@@ -1,10 +1,20 @@
 #include "tree.h"
 
 #define READ(name)  scanf("%[^\n]", name); \
-                    getchar();
+                    getchar(); \
+                    ClearScreen();
 
-#define VOICE(str)  printf("%s", str); \
-                    txSpeak("<speak version='1.0' xml:lang='EN'>%s</speak>", str);
+char* const voice_msg = (char*)calloc(MSG_SIZE, sizeof(char));
+
+#define VOICE(...)  sprintf(voice_msg, __VA_ARGS__); \
+                    txSpeak("\a%s", voice_msg);
+
+#define PRINT_VOICE(...)    printf(__VA_ARGS__); \
+                            VOICE(__VA_ARGS__);
+
+#define WINNING() PrintVideo("winning", winning_frames, winning_delay)
+
+#define LOSING() PrintVideo("losing", losing_frames, losing_delay)
 
 #define ull unsigned long long
 
@@ -176,66 +186,137 @@ void TextDump(Node_t* root, FILE* text_file) {
 }
 
 CodeError_t Akinator(Tree_t* tree) {
-    treeverify(tree);
+    txSpeak("<speak version='1.0' xml:lang='EN'>start program</speak>");
 
-    VOICE("Hi, that's Akinator\n");
+    VOICE("Hi, that's Clash Royale Akinator\n");
+    PrintVideo("openning", openning_frames, openning_delay);
 
     char* answer = (char*)calloc(MSG_SIZE, sizeof(char));
+    int game_number = 0;
 
     do {
-        VOICE("Choose game mode (f - finding, c - compare, d - definition): ");
+        ClearScreen();
+        VOICE("Choose game mode: ");
+        PrintImage("C:/Users/user/Documents/Github/Tree/animation/modes.bmp");
+        txSleep(1000);
+        if (!game_number)
+            VOICE("f - finding, c - comparing, d - definition): ");
         READ(answer);
 
-        while (answer[0] != 'f' && answer[0] != 'c' && answer[0] != 'd') {
+        while (strcmp(answer, "f") && strcmp(answer, "c") && strcmp(answer, "d")) {
             VOICE("Wrong input. Please, enter game mode again: ");
+            PrintImage("C:/Users/user/Documents/Github/Tree/animation/modes.bmp");
             READ(answer);
         }
 
-        if (answer[0] == 'f')
-            FindingWord(tree);
-        else if (answer[0] == 'c')
-            Comparison(tree);
-        else
-            Definition(tree);
+        switch (answer[0]) {
+            case 'f':
+                FindingWord(tree);
+                break;
+            case 'c':
+                Comparison(tree);
+                break;
+            case 'd':
+                Definition(tree);
+                break;
+            default:
+                VOICE("This mode don't exist\n");
+                txSleep(1000);
+        }
 
+        ClearScreen();
         VOICE("Do you want continue?\n");
         READ(answer);
+        txSleep(1000);
+
+        ++game_number;
 
     } while (CheckAnswer(answer));
 
     VOICE("Thanks for playing :)\n");
+    PrintVideo("final", final_frames, final_delay);
 
     return NOTHING;
 }
 
 CodeError_t FindingWord(Tree_t* tree) {
     VOICE("Finding mode...\n");
+    PrintVideo("finding", finding_frames, finding_delay);
+
+    VOICE("Please, answer only yes or no");
+    txSleep(3500);
 
     char* answer = (char*)calloc(MSG_SIZE, sizeof(char));
-    char* message = (char*)calloc(MSG_SIZE, sizeof(char));
     Node_t* cur = tree->root;
 
+    ClearScreen();
+
+    int quest_cnt = 0;
+
     for (; cur && !(cur->left == NULL && cur->right == NULL);) {
-        sprintf(message, "%s?\n", cur->message);
-        VOICE(message);
+        if (quest_cnt)  PrintRandomNode(cur);
+        PRINT_VOICE("%s?\n", cur->message);
         READ(answer);
 
         if (CheckAnswer(answer))
             cur = cur->left;
         else
             cur = cur->right;
+
+        ++quest_cnt;
     }
 
     if (!cur) return NULLPTR;
 
-    sprintf(message, "Finded: %s, is it true?\n", cur->message);
-    VOICE(message);
+    txSleep(1000);
+
+    VOICE("Finded: %s, ", cur->message);
+    PrintCharacter(cur);
+    VOICE("is it true?\n");
+
     READ(answer);
 
-    if (strcmp(answer, "no") == 0)
+    if (strcmp(answer, "no") == 0) {
+        LOSING();
         NewVertex(tree, cur);
+    }
+    else {
+        WINNING();
+    }
 
     return NOTHING;
+}
+
+void PrintRandomNode(Node_t* node) {
+    if (!node)
+        return;
+
+    if (node->left == NULL && node->right == NULL) {
+        ClearScreen();
+        char predict[100];
+        snprintf(predict, 100, "PREDICT: %s", node->message);
+        PrintText(predict);
+        txSleep(2000);
+        PrintCharacter(node);
+        ClearScreen();
+        return;
+    }
+
+    srand(CalcHash((long long)node));
+    if (node->left == NULL) {
+        PrintRandomNode(node->right);
+    }
+    else if (node->right == NULL) {
+        PrintRandomNode(node->left);
+    }
+    else {
+        if (rand() % 2)
+            PrintRandomNode(node->left);
+        else
+            PrintRandomNode(node->right);
+    }
+
+    return;
 }
 
 bool CheckAnswer(const char* answer) {
@@ -243,19 +324,20 @@ bool CheckAnswer(const char* answer) {
 }
 
 CodeError_t NewVertex(Tree_t* tree, Node_t* cur) {
+    ClearScreen();
+
     VOICE("Who it was?\n");
     char* new_msg = (char*)calloc(MSG_SIZE, sizeof(char));
     READ(new_msg);
 
-    char* message = (char*)calloc(MSG_SIZE, sizeof(char));
-    sprintf(message, "How is %s different from %s?: %s ", new_msg, cur->message, new_msg);
-    VOICE(message);
-
+    PRINT_VOICE("How is %s different from %s?: %s ", new_msg, cur->message, new_msg);
     char* diff_param = (char*)calloc(MSG_SIZE, sizeof(char));
     READ(diff_param);
 
     AddVertex(cur, diff_param, new_msg);
     ++tree->nodes_cnt;
+
+    CreateCharacter(new_msg);
 
     htmldump(tree, NOTHING, "added new word");
 
@@ -282,184 +364,179 @@ CodeError_t Comparison(Tree_t* tree) {
     treeverify(tree);
 
     VOICE("Comparing mode...\n");
+
+    PrintImage("C:/Users/user/Documents/Github/Tree/animation/comparison.bmp");
+    txSleep(1500);
+    ClearScreen();
+
     VOICE("Please, enter names of nodes, which you want compare: \n");
 
     char* first_name = (char*)calloc(MSG_SIZE, sizeof(char));
     char* second_name = (char*)calloc(MSG_SIZE, sizeof(char));
-
-    char* message = (char*)calloc(MSG_SIZE, sizeof(char));
-
     READ(first_name);
     READ(second_name);
 
     Node_t* node = tree->root;
-
     if (!CheckSubtree(node, first_name)) {
-        sprintf(message, "There is no %s in base (use finding mode, to add it)\n", first_name);
-        VOICE(message);
+        VOICE("There is no %s in base (use finding mode, to add it)\n", first_name);
+        txSleep(4000);
         return VALUE_ERR;
     }
-
     if (!CheckSubtree(node, second_name)) {
-        sprintf(message, "There is no %s in base (use finding mode, to add it)\n", second_name);
-        VOICE(message);
+        VOICE("There is no %s in base (use finding mode, to add it)\n", second_name);
+        txSleep(4000);
         return VALUE_ERR;
     }
 
-    sprintf(message, "Common part:");
-    VOICE(message);
-    int common_part = 0;
-    int rev = 0;
-    while (CheckSubtree(node, first_name) && CheckSubtree(node, second_name)) {
-        if (node->left == NULL && node->right == NULL)
-            break;
+    VOICE("Comparing %s", first_name);
+    PrintIcon(first_name);
+    txSleep(1500);
 
-        if (CheckSubtree(node->left, first_name) && CheckSubtree(node->left, second_name)) {
-            printf(" --- ");
-            sprintf(message, "%s", node->message);
-            VOICE(message);
-            ++common_part;
+    ClearScreen();
 
-            node = node->left;
-        }
-        else if (CheckSubtree(node->right, first_name) && CheckSubtree(node->right, second_name)) {
-            printf(" --- ");
-            sprintf(message, "(not) %s", node->message);
-            VOICE(message);
-            ++common_part;
-            
-            node = node->right;
-        }
-        else {
-            if (CheckSubtree(node->right, first_name)) 
-                rev = 1;
+    VOICE(" and %s", second_name);
+    PrintIcon(second_name);
+    txSleep(1500);
 
-            break;
-        }
-    }
-
-    if (node == tree->root) {
-        sprintf(message, " NOTHING");
-        VOICE(message);
-    }
-
-    if (common_part)
-        printf(" --- ");
-    printf("\n");
-
-    if (node->left == NULL && node->right == NULL) {
-        sprintf(message, "The elements are the same\n");
-        VOICE(message);
+    int com_res = PrintCommonPart(&node, first_name, second_name);
+    if (com_res == SAME_ELEM)
         return NOTHING;
-    }
 
-    if (rev) {
+    if (com_res == NEED_REV) {
         char* add_name = first_name;
         first_name = second_name;
         second_name = add_name;
     }
 
-    sprintf(message, "First different part: %s - %s, and %s not\n", first_name, node->message, second_name);
-    VOICE(message);
+    ClearScreen();
 
+    PRINT_VOICE("First different part: %s - %s, and %s not\n", first_name, node->message, second_name);
+    txSleep(5500);
     Node_t* left = node->left;
     Node_t* right = node->right;
-    sprintf(message, "%s:", first_name);
-    VOICE(message);
 
-    while (left->left || left->right) {
-        if (CheckSubtree(left->left, first_name)) {
-            printf(" --- ");
-            sprintf(message, "%s", left->message);
-            VOICE(message);
-            left = left->left;
-        }
-        else {
-            printf(" --- ");
-            sprintf(message, "(not) %s", left->message);
-            VOICE(message);
-            left = left->right;
-        }
-    }
+    ClearScreen();
 
-    if (left != node->left) {
-        printf(" --- ");
-    }
-    else {
-        sprintf(message, " no added information");
-        VOICE(message);
-    }
-    printf("\n");
+    PrintDescription(left, first_name);
+    PrintDescription(right, second_name);
 
-    sprintf(message, "%s:", second_name);
-    VOICE(message);
-
-    while (right->left || right->right) {
-        if (CheckSubtree(right->left, second_name)) {
-            printf(" --- ");
-            sprintf(message, "%s", right->message);
-            VOICE(message);
-            right = right->left;
-        }
-        else {
-            printf(" --- ");
-            sprintf(message, "(not) %s", right->message);
-            VOICE(message);
-            right = right->right;
-        }
-    }
-
-    if (right != node->right) {
-        printf(" --- ");
-    }
-    else {
-        sprintf(message, " no added information");
-        VOICE(message);
-    }
-    printf("\n");
+    ClearScreen();
 
     return NOTHING;
+}
+
+int PrintCommonPart(Node_t** node, char* first_name, char* second_name) {
+    VOICE("Common part:");
+    txSleep(1500);
+
+    int common_part = 0;
+    int rev = NO_NEED_REV;
+
+    while (CheckSubtree((*node), first_name) && CheckSubtree((*node), second_name)) {
+        if ((*node)->left == NULL && (*node)->right == NULL)
+            break;
+
+        if (CheckSubtree((*node)->left, first_name) && CheckSubtree((*node)->left, second_name)) {
+            VOICE("%s", (*node)->message);
+            ++common_part;
+
+            (*node) = (*node)->left;
+        }
+        else if (CheckSubtree((*node)->right, first_name) && CheckSubtree((*node)->right, second_name)) {
+            VOICE("(not) %s", (*node)->message);
+            ++common_part;
+            
+            (*node) = (*node)->right;
+        }
+        else {
+            if (CheckSubtree((*node)->right, first_name)) 
+                rev = NEED_REV;
+
+            break;
+        }
+        
+        PrintVideo("common", common_frames, common_delay);
+        txSleep(1500);
+    }
+
+    if (!common_part) {
+        VOICE(" NOTHING");
+        txSleep(1500);
+    }
+
+    if ((*node)->left == NULL && (*node)->right == NULL) {
+        VOICE("The elements are the same\n");
+        txSleep(2000);
+        return SAME_ELEM;
+    }
+
+    return rev;
 }
 
 CodeError_t Definition(Tree_t* tree) {
     treeverify(tree);
 
     VOICE("Definition mode...\n");
+    PrintVideo("explanation", explanation_frames, explanation_delay);
+    txSleep(300);
+
+    ClearScreen();
     VOICE("Enter the name of node, the definition of which you want to get:\n");
 
     char* name = (char*)calloc(MSG_SIZE, sizeof(char));
-    char* message = (char*)calloc(MSG_SIZE, sizeof(char));
-
     READ(name);
+    txSleep(500);
 
     Node_t* node = tree->root;
-
     if (!CheckSubtree(node, name)) {
-        sprintf(message, "There is no %s in base (use finding mode, to add it)\n", name);
-        VOICE(message);
+        VOICE("There is no %s in base (use finding mode, to add it)\n", name);
+        txSleep(4000);
         return VALUE_ERR;
     }
 
-    sprintf(message, "%s: ", name);
-    VOICE(message);
-    while (node->left || node->right) {
-        if (CheckSubtree(node->left, name)) {
-            printf(" --- ");
-            sprintf(message, "%s", node->message);
-            VOICE(message);
-            node = node->left;
-        }
-        else {
-            printf(" --- ");
-            sprintf(message, "(not) %s", node->message);
-            VOICE(message);
-            node = node->right;
-        }
-    }
-
-    printf(" --- \n");
+    PrintDescription(node, name);
 
     return NOTHING;
+}
+
+CodeError_t PrintDescription(Node_t* node, char* name) {
+    my_assert(node, NULLPTR, NULLPTR);
+    my_assert(name, NULLPTR, NULLPTR);
+        
+    ClearScreen();
+    PRINT_VOICE("%s:\n", name);
+    PrintIcon(name);
+
+    int leap_cnt = 0;
+
+    while (node->left || node->right) {
+        node = NextVertex(node, name);
+        ++leap_cnt;
+    }
+
+    if (!leap_cnt) {
+        VOICE(" no added information");
+        txSleep(1500);
+    }
+
+    txSleep(1500);
+
+    return NOTHING;
+}
+
+Node_t* NextVertex(Node_t* node, char* name) {
+    my_assert(node, NULLPTR, NULL);
+    my_assert(name, NULLPTR, NULL);
+
+    if (CheckSubtree(node->left, name)) {
+        PRINT_VOICE("%s\n", node->message);
+        txSleep(2000);
+        return node->left;
+    }
+
+    PRINT_VOICE("(not) %s\n", node->message);
+    txSleep(2500);
+    return node->right;
 }
 
 Node_t* CheckSubtree(Node_t* node, const char* name) {
