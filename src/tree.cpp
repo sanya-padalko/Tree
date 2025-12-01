@@ -293,16 +293,26 @@ void PrintRandomNode(Node_t* node) {
 
     if (node->left == NULL && node->right == NULL) {
         ClearScreen();
+        VOICE("PREDICT: ");
         char predict[100];
+        snprintf(predict, 100, "PREDICT: ");
+        PrintText(predict);
+
+        txSleep(1000);
+
+        ClearScreen();
+        VOICE("%s", node->message);
         snprintf(predict, 100, "PREDICT: %s", node->message);
         PrintText(predict);
-        txSleep(2000);
         PrintCharacter(node);
+
         ClearScreen();
         return;
     }
 
-    srand(CalcHash((long long)node));
+    int* hash_node = (int*)calloc(1, sizeof(int));
+    srand(CalcHash((long long)hash_node));
+
     if (node->left == NULL) {
         PrintRandomNode(node->right);
     }
